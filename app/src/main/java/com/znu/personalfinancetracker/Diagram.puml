@@ -1,0 +1,81 @@
+@startuml
+title PersonalFinanceTracker
+
+package "Model" {
+  interface Transaction {
+    - id: Long
+    - date: Date
+    - description: String
+    - amount: Double
+    - category: Category
+  }
+
+  interface Category {
+    - id: Long
+    - name: String
+    - description: String? = null
+    - isExpense: Boolean
+  }
+}
+
+package "Controller" {
+  class TransactionController {
+    Manages transactions
+    + addTransaction(payload: Transaction): Transaction
+    + editTransaction(id: String, payload: Partial<Transaction>): Transaction
+    + getTransactions(filter: Filter): List<Transaction>
+    - removeTransaction(id: String): void
+  }
+
+  class CategoryController {
+    Manages categories
+    + addCategory(payload: Category): Category
+    + editCategory(id: String, payload: Partial<Category>): Category
+    + getCategories(filter: Filter): List<Category>
+    - removeCategory(id: String): void
+  }
+}
+
+package "View" {
+  class MainView {
+    + displayTransactionView
+    + displayCategoriesView
+  }
+
+  class TransactionsView {
+    + displayTransactions(filter: Filter): void
+    - removeTransaction(id: String): void
+    + getCategories(filter: Filter): void
+  }
+
+  class TransactionManagerView {
+    + addTransaction(payload: Transaction): void
+    + editTransaction(id: String, payload: Partial<Transaction>): void
+  }
+
+  class CategoriesView {
+    + getCategories(filter: Filter): void
+    - removeCategory(id: String): void
+  }
+
+  class CategoryManagerView {
+    + addCategory(payload: Category): void
+    + editCategory(id: String, payload: Partial<Category>): void
+  }
+}
+
+' Views Relationships
+MainView --> TransactionsView : navigates
+MainView --> CategoriesView : navigates
+TransactionsView <--> TransactionManagerView : navigates
+CategoriesView <--> CategoryManagerView : navigates
+TransactionManagerView --> TransactionController : uses
+CategoryManagerView --> CategoryController : uses
+
+' Controllers Relationships
+TransactionController --> Transaction: controls
+CategoryController --> Category: controls
+
+' Models Relationships
+Transaction -> Category : references
+@enduml
