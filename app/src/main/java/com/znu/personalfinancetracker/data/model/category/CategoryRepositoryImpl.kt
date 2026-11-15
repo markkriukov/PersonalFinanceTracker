@@ -21,6 +21,7 @@ class CategoryRepositoryImpl: CategoryRepository {
     }
 
     override fun getExpenseCategories(): List<Category> {
+        Thread.sleep(2000)
         return categories.filter { it.isExpense }
     }
 
@@ -33,6 +34,9 @@ class CategoryRepositoryImpl: CategoryRepository {
         description: String?,
         isExpense: Boolean
     ): Category {
+        if (name.isBlank()) {
+            throw IllegalArgumentException("Назва категорії не може бути порожньою")
+        }
         val newId = UUID.randomUUID().toString()
         val newCategory = Category(id = newId, name = name, description = description, isExpense = isExpense)
         _categories.add(newCategory)
