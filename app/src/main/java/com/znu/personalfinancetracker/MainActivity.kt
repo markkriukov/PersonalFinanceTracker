@@ -12,10 +12,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            setContent {
-                PersonalFinanceTrackerTheme {
-                    MainView()
-                }
+            PersonalFinanceTrackerTheme {
+                MainView()
             }
         }
     }

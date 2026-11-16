@@ -26,14 +26,21 @@ import com.znu.personalfinancetracker.data.model.transaction.Transaction
 import com.znu.personalfinancetracker.navigation.NavRoutes
 import com.znu.personalfinancetracker.navigation.TransactionNavType
 import com.znu.personalfinancetracker.ui.view.categories.CategoriesView
+import com.znu.personalfinancetracker.ui.view.categories.CategoriesViewModel
 import com.znu.personalfinancetracker.ui.view.transactions.TransactionManagerView
 import com.znu.personalfinancetracker.ui.view.transactions.TransactionsView
+import com.znu.personalfinancetracker.ui.view.transactions.TransactionsViewModel
 import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun MainView() {
+fun MainView(
+        transactionsViewModel: TransactionsViewModel =
+                remember { MainViewModelProvider.transactionsViewModel },
+        categoriesViewModel: CategoriesViewModel =
+                remember { MainViewModelProvider.categoriesViewModel }
+) {
     val navController = rememberNavController()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
@@ -83,6 +90,7 @@ fun MainView() {
             ) {
                 composable<NavRoutes.Transactions> {
                     TransactionsView(
+                            viewModel = transactionsViewModel,
                             onAddTransaction = {
                                 navController.navigate(NavRoutes.TransactionManagerNew)
                             },
@@ -94,10 +102,13 @@ fun MainView() {
                     )
                 }
 
-                composable<NavRoutes.Categories> { CategoriesView() }
+                composable<NavRoutes.Categories> { CategoriesView(viewModel = categoriesViewModel) }
 
                 composable<NavRoutes.TransactionManagerNew> {
-                    TransactionManagerView(onReturn = { navController.popBackStack() })
+                    TransactionManagerView(
+                            viewModel = transactionsViewModel,
+                            onReturn = { navController.popBackStack() }
+                    )
                 }
 
                 composable<NavRoutes.TransactionManagerEdit>(
@@ -105,6 +116,7 @@ fun MainView() {
                 ) { navBackStackEntry ->
                     val route = navBackStackEntry.toRoute<NavRoutes.TransactionManagerEdit>()
                     TransactionManagerView(
+                            viewModel = transactionsViewModel,
                             onReturn = { navController.popBackStack() },
                             transactionToEdit = route.transaction
                     )
