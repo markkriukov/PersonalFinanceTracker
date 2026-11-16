@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PersonalFinanceTracker"
 include(":app")
+include(":appium-tests")
